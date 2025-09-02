@@ -1,0 +1,52 @@
+.ck-editor {
+  width:100% !important; /* whole editor including toolbar */
+}
+
+.ck-toolbar {
+  width: 85% !important;  /* make toolbar full width */
+  box-sizing: border-box;   /* avoid overflow */
+  flex-wrap: wrap;          /* wrap buttons to next line if too many */
+}
+
+.ck-editor__editable_inline {
+  min-height: 200px;       /* editable area */
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+
+
+.gradient-bg {
+  background: linear-gradient(
+    to top left,
+    #0e3226,
+    #07140d,
+    #1c6345,
+    #1c6345,
+    #0e3322,
+    #081911,
+    #13482e,
+    #0d2d20
+  );
+}
+
+.merriweather {
+  font-family: "Merriweather", serif;
+}
+
+
+.roboto {
+  font-family: "Roboto", sans-serif;
+}
+
+
+
+/* Hide scrollbar but keep scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}

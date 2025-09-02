@@ -1,0 +1,4 @@
+sql cmd to delete tables
+
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;

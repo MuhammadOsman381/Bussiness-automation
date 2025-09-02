@@ -1,0 +1,1 @@
+encrypte type stored in localstorage using cryptojs 
