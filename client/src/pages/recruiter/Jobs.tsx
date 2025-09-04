@@ -174,7 +174,7 @@ const Jobs = () => {
                 </div>
     
                 <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogContent className="sm:max-w-[425px]">
+                  <DialogContent className="w-full max-w-[95vw] sm:max-w-[425px] p-4 overflow-y-auto max-h-[90vh] custom-scroll">
                         <form onSubmit={handleSubmit}>
                             <DialogHeader>
                                 <DialogTitle>Edit Job</DialogTitle>

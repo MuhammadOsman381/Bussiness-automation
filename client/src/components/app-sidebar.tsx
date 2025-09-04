@@ -17,7 +17,8 @@ import { TbRouteSquare } from "react-icons/tb";
 import { MdOutlineDashboard } from "react-icons/md";
 import axios from "axios"
 import useGetAndDelete from "@/hooks/useGetAndDelete"
-import { GiPathDistance } from "react-icons/gi";
+import { FaUserTie } from "react-icons/fa6";
+import { PiUsersThree } from "react-icons/pi";
 
 type AppSidebarProps = {
   setCurrentRoute: (route: string) => void
@@ -41,18 +42,23 @@ export function AppSidebar({ setCurrentRoute, ...props }: AppSidebarProps) {
     })
     console.log(
       {
-      name: response.users.name,
-      email: response.users.email,
-      avatar: response.users.name.charAt(0).toUpperCase()
-    }
+        name: response.users.name,
+        email: response.users.email,
+        avatar: response.users.name.charAt(0).toUpperCase()
+      }
     )
   }
 
   const applicantRoutes = [
     {
-      title: "Jobs",
-      url: "/applicant/jobs",
+      title: "Prescreen Interview",
+      url: "/applicant/prescreen_interview",
       icon: BriefcaseBusiness,
+    },
+    {
+      title: "Documents",
+      url: "/applicant/documents",
+      icon: IoCreateOutline,
     },
   ]
 
@@ -63,19 +69,29 @@ export function AppSidebar({ setCurrentRoute, ...props }: AppSidebarProps) {
       icon: MdOutlineDashboard,
     },
     {
-      title: "Create Jobs",
-      url: "/recruiter/create-jobs",
+      title: "Documents",
+      url: "/recruiter/document",
       icon: IoCreateOutline,
     },
+    // {
+    //   title: "Jobs",
+    //   icon: BriefcaseBusiness,
+    //   url: "/recruiter/jobs",
+    // },
+    // {
+    //   title: "Journey",
+    //   icon: GiPathDistance,
+    //   url: "/recruiter/journey",
+    // },
     {
-      title: "Jobs",
-      icon: BriefcaseBusiness,
-      url: "/recruiter/jobs",
+      title: "Prescreen Interview",
+      icon: FaUserTie,
+      url: "/recruiter/prescreen_interview",
     },
     {
-      title: "Journey",
-      icon: GiPathDistance ,
-      url: "/recruiter/journey",
+      title: "Candidates",
+      icon: PiUsersThree,
+      url: "/recruiter/candidates",
     },
   ]
 

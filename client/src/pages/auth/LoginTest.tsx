@@ -40,7 +40,7 @@ const LoginTest = () => {
             }
             else {
                 localStorage.removeItem('after_login')
-                navigate(`/${response.data.userType}/jobs`);
+                navigate(`/${response.data.userType}/prescreen_interview`);
             }
         }
     };

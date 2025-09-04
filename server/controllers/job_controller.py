@@ -6,6 +6,8 @@ from models.job import Job
 from helpers.get_current_user import CurrentUser
 from models.application import Application
 from models.interview import Interview
+from fastapi import FastAPI, HTTPException, Query
+import requests
 
 router = APIRouter(prefix="/api/job")
 
@@ -94,3 +96,29 @@ async def get_jobs(jobID: int, user: CurrentUser):
         "application_filled": bool(isApplicationFilled),
         "interview_conducted": bool(isInterViewConducted),
     }
+
+
+
+
+HASDATA_API_KEY = "3f248933-b720-4188-9cfe-ef112c499762"
+HASDATA_INDEED_ENDPOINT = "https://api.hasdata.com/scrape/indeed/listing"
+
+@router.get("/get-jobs")
+def get_jobs(
+    title: str = Query(..., description="Job title to search for"),
+    location: str = Query("United States", description="Location to search in")
+):
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key": HASDATA_API_KEY
+    }  
+    params = {
+        "keyword": title,
+        "location": location,
+        "domain": "www.indeed.com"
+    }
+    try:
+        response = requests.get(HASDATA_INDEED_ENDPOINT, headers=headers, params=params)
+        return {"success": True, "jobs": response}
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=str(e))

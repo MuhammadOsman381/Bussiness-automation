@@ -84,14 +84,12 @@ const Journey = () => {
     }
 
     const getAIPreScreenInterview = async () => {
-        const response = await getInterviewers.callApi(`interview/get-users/${jobId}`, false, false)
-        console.log(response.users)
+        const response = await getInterviewers.callApi(`interview/get-users`, false, false)
         setAiPreScreenData(response.users)
     }
 
     const filterAIPreScreenInterview = async () => {
-        if (!jobId) return
-        const response = await filter.callApi(`interview/get-filtered-users/${aiPrescreenFilter}/${jobId}`, false, false)
+        const response = await filter.callApi(`interview/get-filtered-users/${aiPrescreenFilter}`, false, false)
         setAiPreScreenData(response.users)
     }
 
@@ -106,12 +104,7 @@ const Journey = () => {
                 startAt: items.startTime,
             }
         }) || []
-        if (jobId === '') {
-            setIntrviewHandsOffData(formattedResponse)
-        } else {
-            const filteredResponse = formattedResponse.filter((item: any) => item.jobId == jobId)
-            setIntrviewHandsOffData(filteredResponse)
-        }
+        setIntrviewHandsOffData(formattedResponse)
     }
 
 
@@ -125,7 +118,7 @@ const Journey = () => {
     };
 
     const generateCheckList = async () => {
-        const response = await list.callApi(`checklist/generate-list/${jobId}`, {}, false, false, false)
+        const response = await list.callApi(`checklist/generate-list/`, {}, false, false, false)
         setCheckList(response.data.list.map((item: { list: string, isChecked: boolean }) => ({
             list: item.list,
             isChecked: item.isChecked,
@@ -148,17 +141,14 @@ const Journey = () => {
     }, [])
 
     React.useEffect(() => {
-        if (jobId) {
-            getApplicants();
-            getBookedSlots();
-            generateCheckList();
-        }
-    }, [jobId]);
+        getApplicants();
+        getBookedSlots();
+        generateCheckList();
+    }, []);
 
     React.useEffect(() => {
         filterAIPreScreenInterview()
-    }, [aiPrescreenFilter, jobId])
-
+    }, [aiPrescreenFilter])
 
     if (get.loading || getInterviewers.loading || filter.loading || bookedSlots.loading || jobs.loading) {
         return <Loader />
@@ -167,7 +157,7 @@ const Journey = () => {
         return (
             <div className=" w-full mx-auto  space-y-4">
 
-                <div className="h-auto w-full " >
+                {/* <div className="h-auto w-full " >
                     <div className="h-auto border rounded-xl px-4 py-3" >
                         <h1 className="text-lg font-semibold" >
                             Filter journey by job
@@ -194,7 +184,7 @@ const Journey = () => {
                         </div>
 
                     </div>
-                </div>
+                </div> */}
 
                 <div className="w-full flex lg:flex-row flex-col items-center justify-between lg:gap-0 gap-3   relative">
                     {steps.map((step, index) => (
@@ -354,7 +344,7 @@ const Journey = () => {
                             </div>
                             <Card className="shadow-none">
                                 <CardHeader>
-                                    <CardTitle>Applicants List</CardTitle>
+                                    <CardTitle>User who cleared prescreen interview</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <Table>
@@ -363,7 +353,6 @@ const Journey = () => {
                                                 <TableHead>Name</TableHead>
                                                 <TableHead>Email</TableHead>
                                                 <TableHead>Status</TableHead>
-                                                <TableHead>Job</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -373,7 +362,6 @@ const Journey = () => {
                                                         <TableCell>{applicant.name}</TableCell>
                                                         <TableCell>{applicant.email}</TableCell>
                                                         <TableCell>{applicant.status}</TableCell>
-                                                        <TableCell>{applicant.job}</TableCell>
                                                     </TableRow>
                                                 ))
                                             ) : (

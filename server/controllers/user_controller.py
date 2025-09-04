@@ -6,6 +6,9 @@ import jwt
 import os
 import datetime
 from helpers.get_current_user import CurrentUser
+from models.interview import Interview
+from models.checklist import CheckList
+from models.document import Document
 
 router = APIRouter(prefix="/api/auth")
 ph = PasswordHasher()
@@ -15,6 +18,7 @@ class SignupPayload(BaseModel):
     name: str = Field(max_length=255, min_length=2)
     email: EmailStr
     password: str = Field(max_length=255, min_length=2)
+    contactNo: str = Field(max_length=255, min_length=2)
 
 
 class LoginPayload(BaseModel):
@@ -32,6 +36,7 @@ async def signup(data: SignupPayload):
     await User.create(
         name=data.name,
         email=data.email,
+        contact_no=data.contactNo,
         password=ph.hash(data.password),
         type="applicant",
     )
@@ -56,18 +61,15 @@ async def signup():
 @router.post("/login")
 async def login(data: LoginPayload):
     user = await User.filter(email=data.email).first()
-
     if not user:
         raise HTTPException(400, "Invalid email or password.")
-
     try:
         ph.verify(user.password, data.password)
     except:
         raise HTTPException(400, "Invalid email or password.")
-
     return {
         "success": True,
-        "message":"You're loggedin successfully",
+        "message": "You're loggedin successfully",
         "token": jwt.encode(
             {"id": user.id, "generated_at": str(datetime.datetime.now())},
             os.environ.get("JWT_SECRET"),
@@ -77,19 +79,30 @@ async def login(data: LoginPayload):
     }
 
 
+# @router.get("/get")
+# async def get_users():
+#     users = await User.filter(type="applicant")
+#     return {"success": True, "users": users}
+
+
 @router.get("/get")
 async def get_users():
-    users = await User.filter(type="applicant")
-    return {
-        "success": True,
-        "users": users
-    }
+    users = await User.filter(type="applicant").all()
+    
+    user_data = []
+    for user in users:
+        interview = await Interview.filter(user_id=user.id).first()
+        doc_count = await CheckList.filter(user_id=user.id,time="available" ).count()
+        total_doc = await Document.all().count()
+        user_data.append({
+            "user": user,
+            "interview": interview if interview else "No Interview Found",
+            "available_documents": doc_count,
+            "total_documents": total_doc
+        })
 
+    return {"success": True, "users": user_data}
 
 @router.get("/me")
-async def get_users(user:CurrentUser):
-    return {
-        "success": True,
-        "users": user
-    }
-
+async def get_users(user: CurrentUser):
+    return {"success": True, "users": user}

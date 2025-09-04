@@ -12,6 +12,8 @@ async def lifespan(_):
                 "models.job",
                 "models.application",
                 "models.interview",
+                "models.prescreeninterview",
+                "models.document",
             ]
         },
     )

@@ -1,0 +1,114 @@
+MC Certificate (Motor Carrier Certificate)
+What it is:
+An MC Certificate is a license issued by the FMCSA (Federal Motor Carrier Safety Administration) in the U.S.
+Purpose:
+It allows a trucking company (motor carrier) to legally transport goods across state lines (interstate commerce).
+Example:
+A trucking company in Texas wants to deliver loads to California → They must have an MC Certificate.
+
+
+Certificate of Insurance (COI)
+What it is:
+A COI is proof that a trucking company has the required insurance coverage.
+Purpose:
+It shows shippers, brokers, or clients that the carrier is insured against risks like accidents, cargo damage, or liability.
+
+
+
+Truck Registration
+What it is: Official paperwork that proves the truck is legally registered with the state’s DMV.
+Purpose: Shows that the truck is allowed to be driven on public roads and that registration fees are paid.
+Why it matters: Shippers and brokers want to make sure the truck being used is legally active and not expired.
+
+
+
+Annual DOT Inspection Report (within past 3 months)
+What it is: A yearly safety inspection required by the Department of Transportation (DOT).
+Purpose: Confirms that the truck passes all federal safety standards (brakes, lights, tires, steering, etc.).
+Extra condition here: They want a copy that was completed within the last 90 days, even though it’s an “annual” inspection.
+Why it matters: Carriers must show their equipment is safe and maintained.
+
+
+
+Photos Required
+📸 Exterior of truck (all sides, lights on)
+To prove the truck is in good physical condition and that lights/equipment work.
+Helps avoid scams where someone claims to own/operate a truck that doesn’t exist.
+📸 Interior box with pallet jack and straps visible
+Shows the truck is equipped to secure freight properly.
+Pallet jack = for moving pallets inside.
+Straps = to tie down and secure loads safely.
+📸 VIN on truck door
+VIN (Vehicle Identification Number) is a unique ID for the truck.
+Confirms the photos, registration, and inspection report all match the same vehicle.
+
+
+
+
+
+CDL Verification
+CDL = Commercial Driver’s License (Class A or B depending on what they drive).
+First step: confirm the license is real, valid, and appropriate for the truck they’ll operate.
+
+
+
+2. Pull Clearinghouse before MVR or PSP
+FMCSA Clearinghouse = a federal database that tracks drug and alcohol violations for CDL drivers.
+Why first? 🚫 If a driver has violations here, they can’t be hired, no matter what their record looks like.
+
+
+
+3. Pull MVR (Motor Vehicle Record)
+MVR = driving record from the state DMV.
+Must be clean and valid (no major violations like DUIs, reckless driving, license suspensions).
+Owner Operator: look for “VALID” on the license.
+Driver (company driver): check there are no disqualifications (e.g., suspended, revoked license).
+
+
+
+4. Pull PSP (Pre-Employment Screening Program)
+PSP = federal record of a driver’s inspections, crashes, and safety violations over the last 3 years.
+If the driver has no inspections on file, a manager must approve (because it looks suspicious or means they may be inexperienced).
+
+
+
+5. VOE (Verification of Employment)
+If a driver claims past experience but the PSP report is blank, you need extra proof.
+VOE = contact past employers to confirm they worked there.
+Alternative proof: Bills of Lading (BOLs) or other freight documents that show they actually hauled loads.
+
+
+
+
+
+
+
+
+
+
+If any of these are true, the driver/company is not eligible:
+Not willing to stay OTR (Over the Road) for at least 2 weeks → Candidate must be able to stay out on trips.
+Not willing to drive 3,000+ miles per week → Candidate must agree to a minimum workload.
+MC Certificate not active on Safer → The company’s Motor Carrier certificate must be active on the FMCSA Safer system.
+Company name mismatch (MC Certificate vs COI) → Company name on the MC certificate must match the Certificate of Insurance (COI).
+Truck VIN mismatches across documents → The truck’s VIN must be consistent across registration, insurance, and inspection.
+Registration expired or expiring within 30 days → Truck registration must be valid and not close to expiring.
+DOT inspection older than 3 months → Must have a recent DOT inspection.
+Truck issues (lights, holes, missing stickers) → Physical inspection must pass basic safety/condition checks.
+MVR (Motor Vehicle Record): prohibited/invalid → Driver’s license history must be clean/valid.
+Clearinghouse: prohibited → No restrictions in the FMCSA Drug & Alcohol Clearinghouse.
+PSP (Pre-Employment Screening Program): unacceptable → Must pass the PSP safety record check.
+If any of these fail → candidate rejected.
+
+
+⚙️ Equipment Variables (Setup before onboarding)
+Fuel Card
+Ask the driver if they need one.
+If yes, it can be sent to:
+Load drop-off location (if they’re starting immediately), OR
+Home address (if starting later).
+If urgent, Devon can give them a temporary fuel code instead of a card.
+ELD (Electronic Logging Device)
+Every driver must have one (FMCSA requirement).
+Collect admin login credentials from the driver.
+Device must be from LoadStop’s approved ELD list (to ensure compatibility).

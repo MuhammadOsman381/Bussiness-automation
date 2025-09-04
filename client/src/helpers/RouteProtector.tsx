@@ -23,20 +23,20 @@ const RouteProtector = ({
 
   if (!isAuthRequired && token && type) {
     if (type === "recruiter") {
-      return <Navigate to="/recruiter/jobs" replace />;
+      return <Navigate to="/recruiter/dashboard" replace />;
     }
     if (type === "applicant") {
-      return <Navigate to="/applicant/jobs" replace />;
+      return <Navigate to="/applicant/prescreen" replace />;
     }
   }
 
   if (token) {
     if (pathname.startsWith("/recruiter") && type !== "recruiter") {
-      return <Navigate to="/applicant/jobs" replace />;
+      return <Navigate to="/applicant/prescreen" replace />;
 
     }
     if (pathname.startsWith("/applicant") && type !== "applicant") {
-      return <Navigate to="/recruiter/jobs" replace />;
+      return <Navigate to="/recruiter/dashboard" replace />;
     }
   }
 

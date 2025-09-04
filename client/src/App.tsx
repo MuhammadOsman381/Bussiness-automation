@@ -12,6 +12,10 @@ import SingleJob from "./pages/applicant/SingleJob";
 import SignupTest from "./pages/auth/SignupTest";
 import Interview from "./pages/applicant/Interview";
 import LoginTest from "./pages/auth/LoginTest";
+import PrescreenInterview from "./pages/recruiter/PrescreenInterview";
+import Candidates from "./pages/recruiter/Candidates";
+import Document from "./pages/recruiter/Document";
+import Documents from "./pages/applicant/Documents";
 
 function App() {
   return (
@@ -49,7 +53,9 @@ function App() {
         >
           <Route path="jobs" element={<ApplyJob />} />
           <Route path="job/:jobId" element={<SingleJob />} />
-          <Route path="interview/:jobId" element={<Interview />} />
+          <Route path="prescreen_interview" element={<Interview />} />
+          <Route path="documents" element={<Documents />} />
+
         </Route>
         <Route
           path="/recruiter"
@@ -64,7 +70,9 @@ function App() {
           <Route path="applicants/:jobId" element={<JobApplicants />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="journey" element={<Journey />} />
-
+          <Route path="prescreen_interview" element={<PrescreenInterview />} />
+          <Route path="candidates" element={<Candidates />} />
+          <Route path="document" element={<Document />} />
         </Route>
       </Routes>
     </>

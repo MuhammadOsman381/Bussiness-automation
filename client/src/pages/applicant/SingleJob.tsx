@@ -19,7 +19,6 @@ import usePostAndPut from "@/hooks/usePostAndPut";
 import LoadingButtton from "@/components/LoadingButtton";
 import Loader from "@/components/Loader";
 
-
 interface Job {
     id: number
     title: string;

@@ -26,7 +26,6 @@ import axios from "axios";
 import LoadingButtton from "@/components/LoadingButtton";
 import { useNavigate } from "react-router-dom";
 
-
 const CreateJob = () => {
   const defaultJobData = {
     id: 0,

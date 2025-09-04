@@ -1,1 +1,9 @@
 encrypte type stored in localstorage using cryptojs 
+
+
+ send_result_email(
+        user.email,
+        "Bussiness Automation",
+        status,
+        f"https://cal.com/muhammad-osman-rco9zx/15min",
+    )

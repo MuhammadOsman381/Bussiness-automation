@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
 import axios from "axios"
 import usePostAndPut from "@/hooks/usePostAndPut"
 import { Button } from "@/components/ui/button"
@@ -14,58 +13,62 @@ import {
 } from "@/components/ui/dialog"
 import Loader from "@/components/Loader"
 import LoadingButtton from "@/components/LoadingButtton"
+import useGetAndDelete from "@/hooks/useGetAndDelete"
 
 const Interview = () => {
-  const { jobId } = useParams()
-  const [questions, setQuestions] = useState<{ question: string; explanation: string }[]>([])
+  const [questions, setQuestions] = useState<any[]>([])
   const [currentAnswer, setCurrentAnswer] = useState("")
-  const [qaList, setQaList] = useState<any>([])
+  const [qaList, setQaList] = useState<any[]>([])
   const [showDialog, setShowDialog] = useState(false)
-  const [isGenerating, setIsGenerating] = useState(false) // 👈 NEW
+  const [isGenerating, setIsGenerating] = useState(false)
 
-  const navigate = useNavigate()
-
-  const interview = usePostAndPut(axios.post)
+  const interview = useGetAndDelete(axios.get)
   const postInterview = usePostAndPut(axios.post)
 
-  const generateQuestions = async () => {
-    const response = await interview.callApi(
-      `interview/generate/${jobId}`,
-      {},
-      true,
-      false,
-      false
-    )
-    setQuestions(response?.data?.questions?.questions || null)
+  const getQuestions = async () => {
+    interview
+      .callApi("interview/get_questions", false, false)
+      .then((res) => {
+        if (res?.questions) {
+          setQuestions(res.questions)
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching questions:", err)
+      })
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!currentAnswer.trim() || questions?.length === 0) return
-
+    if (!currentAnswer.trim() || questions.length === 0) return
     const currentQuestion = questions[0]
-    setQaList((prev: any) => [
+    setQaList((prev) => [
       ...prev,
-      { question: currentQuestion?.question, answer: currentAnswer },
+      {
+        question: currentQuestion.question,
+        expected_answer: currentQuestion.expected_output,
+        applicant_answer: currentAnswer,
+      },
     ])
+
     setCurrentAnswer("")
     setIsGenerating(true)
+
     setTimeout(() => {
-      setQuestions((prev) => prev.slice(1))
+      setQuestions((prev) => prev.slice(1)) 
       setIsGenerating(false)
-    }, 3000)
+    }, 1000)
   }
 
-  
   useEffect(() => {
-    if (questions?.length === 0 && qaList?.length > 0 && !isGenerating) {
+    if (questions.length === 0 && qaList.length > 0 && !isGenerating) {
       setShowDialog(true)
     }
   }, [questions, qaList, isGenerating])
 
   useEffect(() => {
-    generateQuestions()
-  }, [jobId])
+    getQuestions()
+  }, [])
 
   return (
     <>
@@ -74,27 +77,26 @@ const Interview = () => {
           <Loader />
         </div>
       ) : questions !== null ? (
-        <div className="flex items-center justify-center w-full  min-h-[89vh]">
-
+        <div className="flex items-center justify-center w-full min-h-[89vh]">
           <form onSubmit={handleSubmit} className="h-full max-w-5xl w-full flex flex-col">
             <div className="w-full mx-auto rounded-lg bg-white h-full flex flex-col flex-1 p-4">
-
-              <div className="scrollbar-hide  flex-1 overflow-y-auto max-h-[74vh] space-y-4 p-2">
-
-                {qaList?.map((qa: any, index: any) => (
+              <div className="scrollbar-hide flex-1 overflow-y-auto max-h-[74vh] space-y-4 p-2">
+                {/* Show previous Q&A */}
+                {qaList?.map((qa, index) => (
                   <div key={index} className="flex flex-col space-y-2">
                     <div className="self-start rounded-r-lg rounded-t-lg bg-zinc-100 p-3 max-w-[70%]">
                       {qa.question}
                     </div>
                     <div className="self-end bg-gradient-to-tr from-[#484f98] to-[#1a237e] text-white rounded-l-lg rounded-t-lg p-3 max-w-[70%]">
-                      {qa.answer}
+                      {qa.applicant_answer}
                     </div>
                   </div>
                 ))}
 
+                {/* Loading state between Qs */}
                 {isGenerating && (
                   <div className="self-start flex items-center gap-2 bg-gray-200 p-3 rounded-lg max-w-[70%] text-gray-500 italic">
-                    <span>please wait</span>
+                    <span>Please wait...</span>
                     <svg
                       className="animate-spin h-4 w-4 text-black"
                       xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +120,8 @@ const Interview = () => {
                   </div>
                 )}
 
-                {!isGenerating && questions?.length > 0 && (
+                {/* Current question */}
+                {!isGenerating && questions.length > 0 && (
                   <div className="self-start bg-zinc-100 p-3 rounded-r-lg rounded-t-lg max-w-[70%]">
                     {questions[0].question}
                   </div>
@@ -126,8 +129,8 @@ const Interview = () => {
               </div>
             </div>
 
-
-            {questions?.length > 0 && (
+            {/* Answer input */}
+            {questions.length > 0 && (
               <div className="w-full mx-auto mt-4">
                 <div className="flex gap-2 items-center border border-gray-300 p-2 rounded-full bg-white">
                   <input
@@ -167,14 +170,14 @@ const Interview = () => {
                   ) : (
                     <Button
                       onClick={async () => {
+                        console.log(qaList)
                         await postInterview.callApi(
-                          `interview/check-answers/${jobId}`,
-                          { qaList: qaList },
+                          `interview/check-answers`,
+                          { qaList },
                           true,
                           false,
                           true
                         )
-                        navigate("/applicant/jobs")
                         setShowDialog(false)
                       }}
                     >
