@@ -15,6 +15,7 @@ import base64
 from PIL import Image
 import io
 import os
+from helpers.files import delete_file
 
 
 router = APIRouter(prefix="/api/checklist")
@@ -36,6 +37,7 @@ class CheckDocument(BaseModel):
 class CheckDocumentsPayload(BaseModel):
     documents: List[CheckDocument]
 
+
 @router.post("/check-documents")
 async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
     for doc in data.documents:
@@ -52,12 +54,12 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
         existing = await CheckList.get_or_none(user=user, document_id=doc.id)
         if existing and existing.status == "available":
             print(f"Skipping {doc.name}, already available.")
-            continue  
+            continue
         is_valid = "not_available"
         if doc.get == "object":
             try:
                 result = await image_checker(doc.purpose, url)
-                print(result)
+                print("image_analyzer_repsonse", result)
                 if result.strip().upper() == "TRUE":
                     is_valid = "available"
             except Exception as e:
@@ -65,8 +67,11 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
                 is_valid = "not_available"
         else:
             result = await ai_document_checker(doc.purpose, doc.text or "")
+            print("doc_reader_repsonse", result)
             if result.strip().lower() == "true":
                 is_valid = "available"
+            else:
+                await delete_file(relative_path)
         if existing:
             existing.status = is_valid
             if is_valid == "available":
@@ -80,6 +85,8 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
             }
             if is_valid == "available":
                 create_data["file_path"] = relative_path
+            else:
+                await delete_file(relative_path)
             await CheckList.create(**create_data)
 
     return {"message": "Documents submitted successfully"}

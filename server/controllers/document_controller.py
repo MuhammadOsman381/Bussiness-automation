@@ -14,7 +14,7 @@ import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 import tempfile
 import os
-from helpers.files import upload_file
+from helpers.files import upload_file, delete_file
 
 router = APIRouter(prefix="/api/document")
 

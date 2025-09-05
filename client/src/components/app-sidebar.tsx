@@ -132,7 +132,7 @@ export function AppSidebar({ setCurrentRoute, ...props }: AppSidebarProps) {
             {data.navMain.map((item) => {
               const isActive = pathname === item.url
               return (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem  key={item.title}>
                   <Link
                     to={item.url}
                     onClick={() => setCurrentRoute(item.title)}

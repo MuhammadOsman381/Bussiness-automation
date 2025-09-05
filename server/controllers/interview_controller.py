@@ -114,10 +114,9 @@ async def result(
     await Interview.create(
         status=str(score),
         user=user,
+        qa=data.qaList,
     )
-
     return {"message": "Thank you for your time. We will contact you soon."}
-
 
 @router.get("/get-users")
 async def get_users():
@@ -147,7 +146,6 @@ async def get_users(filter: str):
             "user",
         )
     users = []
-    print(users_with_interviews)
     for interview in users_with_interviews:
         user = interview.user
         payload = {

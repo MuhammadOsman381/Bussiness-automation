@@ -88,20 +88,24 @@ async def login(data: LoginPayload):
 @router.get("/get")
 async def get_users():
     users = await User.filter(type="applicant").all()
-    
+
     user_data = []
     for user in users:
         interview = await Interview.filter(user_id=user.id).first()
-        doc_count = await CheckList.filter(user_id=user.id,time="available" ).count()
+        doc_count = await CheckList.filter(user_id=user.id, status="available").prefetch_related('document')
         total_doc = await Document.all().count()
-        user_data.append({
-            "user": user,
-            "interview": interview if interview else "No Interview Found",
-            "available_documents": doc_count,
-            "total_documents": total_doc
-        })
+        user_data.append(
+            {
+                "user": user,
+                "interview": interview if interview else "No Interview Found",
+                "available_documents": await CheckList.filter(user_id=user.id, status="available").count(),
+                "total_documents": total_doc,
+                "documents": doc_count,
+            }
+        )
 
     return {"success": True, "users": user_data}
+
 
 @router.get("/me")
 async def get_users(user: CurrentUser):
