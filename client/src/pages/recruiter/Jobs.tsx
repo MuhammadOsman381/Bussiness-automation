@@ -112,10 +112,10 @@ const Jobs = () => {
 
 
 
-    if(jobs.loading){
+    if (jobs.loading) {
         return <Loader />
     }
-    else{
+    else {
         return (
             <div className="w-full">
                 <div className="flex flex-col  gap-3">
@@ -131,7 +131,7 @@ const Jobs = () => {
                             <p dangerouslySetInnerHTML={{ __html: job.description }} className="text-gray-700 mb-4 ">
                             </p>
                             <div className="flex flex-wrap gap-2" >
-    
+
                                 <Link to={`/recruiter/applicants/${job.id}`}>
                                     <Button className="cursor-pointer" variant="default">
                                         Applicants
@@ -172,9 +172,9 @@ const Jobs = () => {
                         </div>
                     ))}
                 </div>
-    
+
                 <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogContent className="w-full max-w-[95vw] sm:max-w-[425px] p-4 overflow-y-auto max-h-[90vh] custom-scroll">
+                    <DialogContent className="w-full max-w-[95vw] sm:max-w-[425px] p-4 overflow-y-auto max-h-[90vh] custom-scroll">
                         <form onSubmit={handleSubmit}>
                             <DialogHeader>
                                 <DialogTitle>Edit Job</DialogTitle>
@@ -182,7 +182,7 @@ const Jobs = () => {
                                     Update the details of this job posting.
                                 </DialogDescription>
                             </DialogHeader>
-    
+
                             {selectedJob && (
                                 <div className="grid gap-4 py-4">
                                     <div className="grid gap-2">
@@ -199,7 +199,7 @@ const Jobs = () => {
                                         <CKEditor
                                             editor={ClassicEditor as any}
                                             data={selectedJob.description}
-                                            onChange={(event, editor) => {
+                                            onChange={(editor: any) => {
                                                 const content = editor.getData();
                                                 setSelectedJob((prev) =>
                                                     prev ? { ...prev, description: content } : prev
@@ -219,7 +219,7 @@ const Jobs = () => {
                                             onChange={handleChange}
                                         />
                                     </div>
-    
+
                                     <div className="grid gap-2">
                                         <Label>Custom Fields</Label>
                                         {formFields.map((field, index) => (
@@ -258,7 +258,7 @@ const Jobs = () => {
                                     </div>
                                 </div>
                             )}
-    
+
                             <DialogFooter>
                                 <Button type="submit">Save Changes</Button>
                             </DialogFooter>

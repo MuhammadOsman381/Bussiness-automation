@@ -1,3 +1,4 @@
+import Helpers from "@/helpers/Helpers";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -11,7 +12,7 @@ const useGetAndDelete = (method: ApiMethod) => {
     const callApi = async (path: string, auth: boolean, fileHeaders: boolean) => {
         setLoading(true);
         setError(null);
-        const url = `http://localhost:8000/api/${path}`;
+        const url = `${Helpers.apiUrl}${path}`;
         let headers;
 
         if (auth) {

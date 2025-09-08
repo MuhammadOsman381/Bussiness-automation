@@ -42,16 +42,16 @@ interface InterviewHandsOff {
     startAt: string
 }
 
-interface Job {
-    id: string
-    title: string
-    description: string
-    time: string
-    form_fields: {
-        name: string
-        type: string
-    }[]
-}
+// interface Job {
+//     id: string
+//     title: string
+//     description: string
+//     time: string
+//     form_fields: {
+//         name: string
+//         type: string
+//     }[]
+// }
 
 const Journey = () => {
     const steps = ["Leads Captured", "AI Prescreen", "Interview Handoff", "Dynamic checklists & portal", "Document Processing"];
@@ -60,7 +60,7 @@ const Journey = () => {
     const [aiPrescreenFilter, setAiPrescreenFilter] = React.useState("Pass")
     const [applicants, setApplicants] = React.useState<Applicant[]>([])
     const [intrviewHandsOffData, setIntrviewHandsOffData] = React.useState<InterviewHandsOff[]>([])
-    const [jobsData, setJobsData] = React.useState<Job[]>([])
+    // const [jobsData, setJobsData] = React.useState<Job[]>([])
     const [jobId, setJobId] = React.useState('')
     const [checkList, setCheckList] = React.useState<{ list: string, isChecked: boolean }[]>([])
 
@@ -110,7 +110,7 @@ const Journey = () => {
 
     const getJobs = async () => {
         const response = await jobs.callApi("job/get", false, false);
-        setJobsData(response.jobs);
+        // setJobsData(response.jobs);
         if (response.jobs && response.jobs.length > 0) {
             const firstJob = response.jobs[0];
             setJobId(firstJob.id);

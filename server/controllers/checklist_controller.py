@@ -48,7 +48,7 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
             if uploads_marker in file_path
             else file_path
         )
-        url = f"http://localhost:8000/files/{relative_path}"
+        url = f"http://3.91.226.230/backend/files/{relative_path}"
 
         existing = await CheckList.get_or_none(user=user, document_id=doc.id)
         if existing and existing.status == "available":

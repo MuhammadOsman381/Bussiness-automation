@@ -18,21 +18,21 @@ const Dashboard = () => {
 
     const [loading, setLoading] = useState(true)
     const [totalJobs, setTotalJobs] = useState(0)
-    const [totalApplicants, setTotalApplicants] = useState(0)
+    // const [totalApplicants, setTotalApplicants] = useState(0)
     const [users, setUsers] = useState<{ name: string, email: string }[]>([])
 
     const fetchCounts = async () => {
         try {
             setLoading(true)
-            const [jobsRes, appsRes, userRes] = await Promise.all([
+            const [jobsRes, userRes] = await Promise.all([
                 getJob.callApi("job/get", false, false),
                 getApplicants.callApi("application/get", false, false),
                 getUsers.callApi("auth/get", false, true)
             ])
             setTotalJobs(Array.isArray(jobsRes?.jobs) ? jobsRes.jobs.length : 0)
-            setTotalApplicants(
-                Array.isArray(appsRes?.applications) ? appsRes.applications.length : 0
-            )
+            // setTotalApplicants(
+            //     Array.isArray(appsRes?.applications) ? appsRes.applications.length : 0
+            // )
             setUsers(
                 Array.isArray(userRes?.users) ? userRes.users : []
             )

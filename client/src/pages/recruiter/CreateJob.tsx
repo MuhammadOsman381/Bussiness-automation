@@ -44,7 +44,7 @@ const CreateJob = () => {
   const [fields, setFields] = useState<{ name: string; type: string }[]>(defaultFormFields);
 
   const job = usePostAndPut(axios.post)
-  const navigate  = useNavigate()
+  const navigate = useNavigate()
 
   const addField = () => {
     setFields([...fields, { name: "", type: "text" }]);
@@ -108,7 +108,7 @@ const CreateJob = () => {
               <CKEditor
                 editor={ClassicEditor as any}
                 data={jobData.description}
-                onChange={(event, editor) => {
+                onChange={(editor: any) => {
                   const content = editor.getData();
                   setJobData((prev) => ({ ...prev, description: content }));
                 }}
