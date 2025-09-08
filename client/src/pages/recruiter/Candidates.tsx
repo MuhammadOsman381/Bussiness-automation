@@ -149,8 +149,8 @@ const Candidates = () => {
 
                     <TabsContent value="docs">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
-                            {selectedUser.documents.length > 0 ? (
-                                selectedUser.documents.map((doc, i) => (
+                            {selectedUser?.documents?.length > 0 ? (
+                                selectedUser?.documents?.map((doc, i) => (
                                     <Card key={i} className="shadow-none">
                                         <div className="text-lg font-semibold px-5">
                                             {doc.file_path.split("/")[0]}
@@ -187,21 +187,27 @@ const Candidates = () => {
                                 Interview Q&A
                             </h2>
                             <div className="space-y-6">
-                                {selectedUser.interview.qa.map((item, index) => (
-                                    <div key={index} className="border-b pb-4 last:border-0 last:pb-0">
-                                        <p className="text-sm font-medium text-gray-600">Question:</p>
-                                        <p className="text-base font-semibold text-gray-900 mb-2">
-                                            {item.question}
-                                        </p>
+                                {
+                                    selectedUser?.interview?.qa?.length > 0 ?
+                                        selectedUser?.interview?.qa?.map((item, index) => (
+                                            <div key={index} className="border-b pb-4 last:border-0 last:pb-0">
+                                                <p className="text-sm font-medium text-gray-600">Question:</p>
+                                                <p className="text-base font-semibold text-gray-900 mb-2">
+                                                    {item.question}
+                                                </p>
 
-                                        <p className="text-sm font-medium text-gray-600">Answer:</p>
-                                        <p className="text-base text-gray-800">
-                                            {item.applicant_answer || (
-                                                <span className="italic text-gray-400">No answer provided</span>
-                                            )}
-                                        </p>
-                                    </div>
-                                ))}
+                                                <p className="text-sm font-medium text-gray-600">Answer:</p>
+                                                <p className="text-base text-gray-800">
+                                                    {item.applicant_answer || (
+                                                        <span className="italic text-gray-400">No answer provided</span>
+                                                    )}
+                                                </p>
+                                            </div>
+                                        )) :
+                                        <div>
+                                            No interview questions available
+                                        </div>
+                                }
                             </div>
                         </div>
                     </TabsContent>

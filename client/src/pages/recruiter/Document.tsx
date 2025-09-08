@@ -164,7 +164,7 @@ const Document = () => {
                                     <TableRow key={index}>
                                         <TableCell>{doc.title}</TableCell>
                                         <TableCell>{doc.name}</TableCell>
-                                        <TableCell className="max-w-xl whitespace-normal break-words">
+                                        <TableCell className="max-w-xl lg:whitespace-normal lg:break-words">
                                             {doc.purpose}
                                         </TableCell>
                                         <TableCell>{doc.get}</TableCell>

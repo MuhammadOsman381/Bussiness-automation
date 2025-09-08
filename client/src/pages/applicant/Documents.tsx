@@ -104,7 +104,7 @@ const Documents = () => {
 
             console.log("response:", data);
 
-            // await post.callApi("checklist/check-documents", { documents: data }, true, false, true);
+            await post.callApi("checklist/check-documents", { documents: data }, true, false, true);
         } catch (err) {
             console.error("Error submitting documents:", err);
         }
