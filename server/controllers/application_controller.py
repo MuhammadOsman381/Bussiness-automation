@@ -8,7 +8,6 @@ from models.user import User
 
 router = APIRouter(prefix="/api/application")
 
-
 class CreateApplicationPayload(BaseModel):
     job_id: int
     fields: Dict[str, Any]

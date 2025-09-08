@@ -41,7 +41,6 @@ class CheckDocumentsPayload(BaseModel):
 @router.post("/check-documents")
 async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
     for doc in data.documents:
-        # Normalize file path
         file_path = doc.file_path.replace("\\", "/")
         uploads_marker = "uploads/"
         relative_path = (
@@ -49,7 +48,7 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
             if uploads_marker in file_path
             else file_path
         )
-        url = f" https://dd481c3b35ba.ngrok-free.app/files/{relative_path}"
+        url = f"http://localhost:8000/files/{relative_path}"
 
         existing = await CheckList.get_or_none(user=user, document_id=doc.id)
         if existing and existing.status == "available":
@@ -71,7 +70,7 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
             if result.strip().lower() == "true":
                 is_valid = "available"
             else:
-                await delete_file(relative_path)
+                delete_file(relative_path)
         if existing:
             existing.status = is_valid
             if is_valid == "available":
@@ -86,7 +85,7 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
             if is_valid == "available":
                 create_data["file_path"] = relative_path
             else:
-                await delete_file(relative_path)
+                delete_file(relative_path)
             await CheckList.create(**create_data)
 
     return {"message": "Documents submitted successfully"}

@@ -20,7 +20,7 @@ type DocumentItem = {
     name: string;
     purpose: string;
     get: string;
-    file?: File | null; // ✅ single file only
+    file?: File | null; 
 };
 
 const Documents = () => {
@@ -36,7 +36,7 @@ const Documents = () => {
                     setDocuments(
                         res.documents.map((doc: any) => ({
                             ...doc,
-                            file: null, // ✅ initialize single file
+                            file: null,
                         }))
                     );
                 }
