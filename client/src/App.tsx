@@ -9,7 +9,7 @@ import Dashboard from "./pages/recruiter/Dashboard";
 import JobApplicants from "./pages/recruiter/JobApplicants";
 import Journey from "./pages/recruiter/Journey";
 import SingleJob from "./pages/applicant/SingleJob";
-import SignupTest from "./pages/auth/SignupTest";
+// import SignupTest from "./pages/auth/SignupTest";
 import Interview from "./pages/applicant/Interview";
 import LoginTest from "./pages/auth/LoginTest";
 import PrescreenInterview from "./pages/recruiter/PrescreenInterview";
@@ -35,14 +35,14 @@ function App() {
             </RouteProtector>
           }
         />
-        <Route
+        {/* <Route
           path="/signup"
           element={
             <RouteProtector isAuthRequired={false}>
               <SignupTest />
             </RouteProtector>
           }
-        />
+        /> */}
         <Route
           path="/applicant"
           element={

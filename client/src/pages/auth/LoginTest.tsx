@@ -4,7 +4,7 @@ import { BiSolidPolygon } from "react-icons/bi";
 import { useState } from "react";
 import usePostAndPut from "@/hooks/usePostAndPut";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SpinLoader from './../../components/SpinLoader';
 import NavBar from "@/components/NavBar";
 
@@ -127,12 +127,12 @@ const LoginTest = () => {
 
                                     </form>
 
-                                    <p className="mt-6 text-sm text-gray-500">
+                                    {/* <p className="mt-6 text-sm text-gray-500">
                                         if you have an account?{" "}
                                         <Link to="/signup" className="text-black font-bold hover:underline">
                                             Signup
                                         </Link>
-                                    </p>
+                                    </p> */}
                                 </div>
                             </div>
                         </div>
