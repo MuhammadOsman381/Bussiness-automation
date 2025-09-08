@@ -23,10 +23,6 @@ text_llm = ChatOpenAI(
 
 
 async def ai_document_checker(requirements: str, text: str) -> str:
-    """
-    Checks a document's text against requirements using LLM.
-    Returns 'true' or 'false'.
-    """
     if not text or text.strip() == "":
         return "false"
 

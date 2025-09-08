@@ -26,7 +26,7 @@ const RouteProtector = ({
       return <Navigate to="/recruiter/dashboard" replace />;
     }
     if (type === "applicant") {
-      return <Navigate to="/applicant/prescreen" replace />;
+      return <Navigate to="/applicant/prescreen_interview" replace />;
     }
   }
 

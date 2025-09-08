@@ -13,7 +13,7 @@ import Loader from "@/components/Loader"
 
 const Dashboard = () => {
     const getJob = useGetAndDelete(axios.get)
-    const getApplicants = useGetAndDelete(axios.get)
+    // const getApplicants = useGetAndDelete(axios.get)
     const getUsers = useGetAndDelete(axios.get)
 
     const [loading, setLoading] = useState(true)
@@ -26,13 +26,14 @@ const Dashboard = () => {
             setLoading(true)
             const [jobsRes, userRes] = await Promise.all([
                 getJob.callApi("job/get", false, false),
-                getApplicants.callApi("application/get", false, false),
+                // getApplicants.callApi("application/get", false, false),
                 getUsers.callApi("auth/get", false, true)
             ])
             setTotalJobs(Array.isArray(jobsRes?.jobs) ? jobsRes.jobs.length : 0)
             // setTotalApplicants(
             //     Array.isArray(appsRes?.applications) ? appsRes.applications.length : 0
             // )
+            console.log(userRes)
             setUsers(
                 Array.isArray(userRes?.users) ? userRes.users : []
             )

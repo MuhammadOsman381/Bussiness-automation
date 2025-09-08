@@ -53,6 +53,7 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
         existing = await CheckList.get_or_none(user=user, document_id=doc.id)
         if existing and existing.status == "available":
             print(f"Skipping {doc.name}, already available.")
+            delete_file(relative_path)
             continue
         is_valid = "not_available"
         if doc.get == "object":

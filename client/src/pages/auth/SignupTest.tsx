@@ -13,6 +13,7 @@ const SignupTest = () => {
         name: "",
         email: "",
         password: "",
+        contactNo: ""
     };
 
     const [userData, setUserData] = useState(defaultUserData);
@@ -34,7 +35,6 @@ const SignupTest = () => {
         else {
             navigate('/login')
         }
-
     };
 
 
@@ -44,7 +44,7 @@ const SignupTest = () => {
             <div className="min-h-[92vh] flex items-center justify-center bg-gray-50 p-4">
                 <div className="w-full max-w-5xl bg-white rounded-2xl shadow-sm overflow-hidden flex  flex-col lg:flex-row">
                     <div className="flex flex-col w-full lg:w-1/2  items-start justify-start p-6 ">
-                       
+
 
                         <div className="w-full  flex items-center justify-center h-full ">
                             <div className="flex flex-col justify-center items-center w-full">
@@ -88,6 +88,22 @@ const SignupTest = () => {
                                                 className="mt-1 w-full  border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#1a237e] focus:outline-none"
                                             />
                                         </div>
+
+                                        <div>
+                                            <div className="flex justify-between items-center">
+                                                <label className="block text-sm font-medium text-gray-600">
+                                                    Contact No
+                                                </label>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                id="contactNo"
+                                                onChange={handleInputChange}
+                                                className="mt-1 w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#1a237e] focus:outline-none"
+                                            />
+                                        </div>
+
+
 
                                         <div>
                                             <div className="flex justify-between items-center">
@@ -145,9 +161,9 @@ const SignupTest = () => {
                     <div className="  bg-gradient-to-tr from-[#484f98] to-[#1a237e] w-full lg:w-1/2 rounded-[10px] h-[400px] lg:h-[650px] text-white flex flex-col items-center justify-center px-3 py-10 max-sm:p-10  relative">
                         <div className="max-w-sm w-full">
 
-                             <h2 className="leading-tight space-y-4">
+                            <h2 className="leading-tight space-y-4">
                                 <div className="merriweather italic text-4xl lg:text-5xl tracking-normal">
-                                    Powering businesses with 
+                                    Powering businesses with
                                 </div>
                                 <div className="roboto text-3xl lg:text-5xl tracking-tight">
                                     smart automation

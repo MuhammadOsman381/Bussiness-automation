@@ -9,8 +9,9 @@ from models.document import Document
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from langchain_community.document_loaders import PyPDFLoader
 from PIL import Image
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+# import pytesseract
+# pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+from helpers.getText import get_text
 import tempfile
 import os
 from helpers.files import upload_file, delete_file
@@ -88,16 +89,14 @@ async def get_text_from_document(
     try:
         saved_file = await upload_file(file, folder_name)
         text_content = ""
-
         if get == "text":
             if file.content_type.startswith("image/"):
                 image = Image.open(saved_file["path"])
-                text_content = pytesseract.image_to_string(image)
+                text_content = await get_text(image)
             elif file.content_type == "application/pdf":
                 loader = PyPDFLoader(saved_file["path"])
                 documents = loader.load()
                 text_content = "\n".join([doc.page_content for doc in documents])
-
         return {
             "success": True,
             "file_path": saved_file["path"],

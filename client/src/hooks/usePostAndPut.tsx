@@ -18,7 +18,7 @@ const usePostAndPut = (method: ApiMethod) => {
     ) => {
         setLoading(true);
         setError(null);
-        const url = `${Helpers.apiUrl}/${path}`;
+        const url = `${Helpers.apiUrl}${path}`;
         let headers;
 
         if (auth) {

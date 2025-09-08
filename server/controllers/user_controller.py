@@ -18,7 +18,7 @@ class SignupPayload(BaseModel):
     name: str = Field(max_length=255, min_length=2)
     email: EmailStr
     password: str = Field(max_length=255, min_length=2)
-    contactNo: str = Field(max_length=255, min_length=2)
+    contactNo: str
 
 
 class LoginPayload(BaseModel):
@@ -92,13 +92,17 @@ async def get_users():
     user_data = []
     for user in users:
         interview = await Interview.filter(user_id=user.id).first()
-        doc_count = await CheckList.filter(user_id=user.id, status="available").prefetch_related('document')
+        doc_count = await CheckList.filter(
+            user_id=user.id, status="available"
+        ).prefetch_related("document")
         total_doc = await Document.all().count()
         user_data.append(
             {
                 "user": user,
                 "interview": interview if interview else "No Interview Found",
-                "available_documents": await CheckList.filter(user_id=user.id, status="available").count(),
+                "available_documents": await CheckList.filter(
+                    user_id=user.id, status="available"
+                ).count(),
                 "total_documents": total_doc,
                 "documents": doc_count,
             }
@@ -110,3 +114,20 @@ async def get_users():
 @router.get("/me")
 async def get_users(user: CurrentUser):
     return {"success": True, "users": user}
+
+
+@router.get("/create-users")
+async def create_users():
+    created_users = []
+    password = ph.hash("12345678")
+    for i in range(1, 11):
+        new_user = await User.create(
+            name=f"Test User {i}",
+            email=f"testuser{i}@example.com",
+            password=password,
+            type="applicant",
+            contact_no=f"030000000{i:02d}",
+        )
+        created_users.append(new_user)
+    return {"success": True, "users": created_users}
+
