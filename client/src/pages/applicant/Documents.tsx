@@ -62,7 +62,6 @@ const Documents = () => {
         try {
             const data: {
                 id: number;
-                text: string;
                 name: string;
                 purpose: string;
                 get: string;
@@ -70,16 +69,14 @@ const Documents = () => {
             }[] = [];
 
             for (const doc of documents) {
-                let extractedTexts: string = "";
                 let filePath: string = "";
-
                 if (doc.file) {
                     const formData = new FormData();
                     formData.append("file", doc.file);
                     formData.append("folder_name", doc.title.toLowerCase().replace(/\s+/g, "_"));
                     formData.append("get", doc.get);
                     const res = await postDocument.callApi(
-                        "document/get-text-from-document",
+                        "document/upload-file",
                         formData,
                         false,
                         true,
@@ -87,23 +84,17 @@ const Documents = () => {
                     );
 
                     if (res?.data) {
-                        extractedTexts = res.data.text;
                         filePath = res.data.file_path;
                     }
                 }
-
                 data.push({
                     id: doc.id,
                     name: doc.name,
                     purpose: doc.purpose,
                     get: doc.get,
-                    text: extractedTexts,
                     file_path: filePath
                 });
             }
-
-            console.log("response:", data);
-
             await post.callApi("checklist/check-documents", { documents: data }, true, false, true);
         } catch (err) {
             console.error("Error submitting documents:", err);

@@ -133,7 +133,6 @@ const ApplyJob = () => {
                 </Button>
               </Link>
             }
-
             {
 
               job.status == "interview cleared" &&
@@ -141,7 +140,6 @@ const ApplyJob = () => {
                 Interview Submitted
               </Button>
             }
-
           </div>
         ))}
       </div>

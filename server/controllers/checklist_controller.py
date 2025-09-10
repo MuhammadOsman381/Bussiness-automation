@@ -16,7 +16,7 @@ from PIL import Image
 import io
 import os
 from helpers.files import delete_file
-
+from helpers.get_document_text import get_text
 
 router = APIRouter(prefix="/api/checklist")
 
@@ -29,7 +29,6 @@ class CheckDocument(BaseModel):
     id: int
     name: str
     purpose: str
-    text: Optional[str] = None
     get: str
     file_path: str
 
@@ -38,57 +37,76 @@ class CheckDocumentsPayload(BaseModel):
     documents: List[CheckDocument]
 
 
+# @router.post("/check-documents")
+# async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
+#     for doc in data.documents:
+#         file_path = doc.file_path.replace("\\", "/")
+#         uploads_marker = "uploads/"
+#         relative_path = (
+#             file_path.split(uploads_marker, 1)[1]
+#             if uploads_marker in file_path
+#             else file_path
+#         )
+#         url = f"http://localhost:8000/files/{relative_path}"
+
+#         existing = await CheckList.get_or_none(user=user, document_id=doc.id)
+#         if existing and existing.status == "available":
+#             print(f"Skipping {doc.name}, already available.")
+#             delete_file(relative_path)
+#             continue
+#         is_valid = "not_available"
+#         if doc.get == "object":
+#             try:
+#                 result = await image_checker(doc.purpose, url)
+#                 print("image_analyzer_repsonse", result)
+#                 if result.strip().upper() == "TRUE":
+#                     is_valid = "available"
+#             except Exception as e:
+#                 print(f"Failed to check image {doc.file_path}: {e}")
+#                 is_valid = "not_available"
+#         else:
+#             result = await ai_document_checker(doc.purpose, doc.text or "")
+#             print("doc_reader_repsonse", result)
+#             if result.strip().lower() == "true":
+#                 is_valid = "available"
+#             else:
+#                 delete_file(relative_path)
+#         if existing:
+#             existing.status = is_valid
+#             if is_valid == "available":
+#                 existing.file_path = relative_path
+#             await existing.save()
+#         else:
+#             create_data = {
+#                 "status": is_valid,
+#                 "user": user,
+#                 "document_id": doc.id,
+#             }
+#             if is_valid == "available":
+#                 create_data["file_path"] = relative_path
+#             else:
+#                 delete_file(relative_path)
+#             await CheckList.create(**create_data)
+
+#     return {"message": "Documents submitted successfully"}
+
+
 @router.post("/check-documents")
 async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
     for doc in data.documents:
-        file_path = doc.file_path.replace("\\", "/")
-        uploads_marker = "uploads/"
-        relative_path = (
-            file_path.split(uploads_marker, 1)[1]
-            if uploads_marker in file_path
-            else file_path
-        )
-        url = f"http://3.91.226.230/backend/files/{relative_path}"
-
-        existing = await CheckList.get_or_none(user=user, document_id=doc.id)
-        if existing and existing.status == "available":
-            print(f"Skipping {doc.name}, already available.")
-            delete_file(relative_path)
-            continue
-        is_valid = "not_available"
-        if doc.get == "object":
-            try:
-                result = await image_checker(doc.purpose, url)
-                print("image_analyzer_repsonse", result)
-                if result.strip().upper() == "TRUE":
-                    is_valid = "available"
-            except Exception as e:
-                print(f"Failed to check image {doc.file_path}: {e}")
-                is_valid = "not_available"
-        else:
-            result = await ai_document_checker(doc.purpose, doc.text or "")
-            print("doc_reader_repsonse", result)
-            if result.strip().lower() == "true":
-                is_valid = "available"
+        if doc.file_path:
+            public_path = "/" + doc.file_path.replace("\\", "/").split("uploads/", 1)[1]
+        if doc.get == "text":
+            text = await get_text(doc.file_path)
+            response = ai_document_checker(doc.purpose, text)
+            if response == "true":
+                await CheckList(status="available", file_path=doc.file_path)
             else:
-                delete_file(relative_path)
-        if existing:
-            existing.status = is_valid
-            if is_valid == "available":
-                existing.file_path = relative_path
-            await existing.save()
+                await CheckList(status="not_available", file_path="")
         else:
-            create_data = {
-                "status": is_valid,
-                "user": user,
-                "document_id": doc.id,
-            }
-            if is_valid == "available":
-                create_data["file_path"] = relative_path
-            else:
-                delete_file(relative_path)
-            await CheckList.create(**create_data)
-
+            response = await image_checker(doc.purpose, public_path)
+            if response == "true":
+                await CheckList(status="available", file_path=doc.file_path)
     return {"message": "Documents submitted successfully"}
 
 
