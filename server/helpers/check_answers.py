@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Dict
-from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 from langchain.prompts import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
@@ -10,13 +10,12 @@ import os
 
 
 class Result(BaseModel):
-    score: str
+    score: int
 
-
-llm = ChatGroq(
-    model="meta-llama/llama-4-scout-17b-16e-instruct",
+llm = ChatOpenAI(
+    model="gpt-4.1",  
     temperature=0,
-    api_key=os.environ.get("GROQ_API_KEY"),
+    api_key=os.environ.get("OPENAI_API_KEY"),
 ).with_structured_output(Result)
 
 

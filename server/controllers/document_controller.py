@@ -1,23 +1,16 @@
 from fastapi import APIRouter, HTTPException, Depends, Form
 from pydantic import BaseModel
-from typing import List, Dict, Any
-from models.job import Job
-from models.application import Application
-from helpers.get_current_user import CurrentUser
-from models.user import User
 from models.document import Document
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from langchain_community.document_loaders import PyPDFLoader
-from PIL import Image
+# import boto3
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException
+import shutil
+import uuid
 # import pytesseract
 # pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-from helpers.getText import get_text
-import tempfile
 import os
-from helpers.files import upload_file, delete_file
 
 router = APIRouter(prefix="/api/document")
-
 
 class CreateAndUpdateDocumentPayload(BaseModel):
     name: str
@@ -44,7 +37,6 @@ async def create_and_update_document(id: int, data: CreateAndUpdateDocumentPaylo
             document = await Document.get_or_none(id=id)
             if not document:
                 raise HTTPException(status_code=404, detail="Document not found")
-
             document.title = data.title
             document.name = data.name
             document.purpose = data.purpose
@@ -82,25 +74,26 @@ async def delete_documents(document_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/get-text-from-document")
-async def get_text_from_document(
-    file: UploadFile = File(...), folder_name: str = Form(...), get: str = Form("text")
-):
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+@router.post("/upload-file")
+async def upload_file(file: UploadFile = File(...), folder_name: str = Form(...)):
     try:
-        saved_file = await upload_file(file, folder_name)
-        text_content = ""
-        if get == "text":
-            if file.content_type.startswith("image/"):
-                image = Image.open(saved_file["path"])
-                text_content = await get_text(image)
-            elif file.content_type == "application/pdf":
-                loader = PyPDFLoader(saved_file["path"])
-                documents = loader.load()
-                text_content = "\n".join([doc.page_content for doc in documents])
+        folder_path = os.path.join(UPLOAD_DIR, folder_name)
+        os.makedirs(folder_path, exist_ok=True)
+
+        ext = os.path.splitext(file.filename)[1]
+        unique_name = f"{uuid.uuid4().hex}{ext}"
+
+        file_path = os.path.join(folder_path, unique_name)
+
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
         return {
             "success": True,
-            "file_path": saved_file["path"],
-            "text": text_content.strip(),
+            "message": f"File '{file.filename}' saved successfully as '{unique_name}'.",
+            "file_path": file_path,
         }
 
     except Exception as e:
