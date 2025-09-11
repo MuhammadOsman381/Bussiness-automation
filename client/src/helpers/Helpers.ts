@@ -4,7 +4,7 @@ class Helpers {
     static basePath: string = `http://${this.localhost}`;
     static apiUrl: string = `${this.basePath}/api/`;
     static secretKey: string = '3434774438';
-    static imageUrl: string = `${this.basePath}/files/`;
+    static imageUrl: string = `${this.basePath}/files`;
 }
 
 export default Helpers;

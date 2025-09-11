@@ -1,29 +1,16 @@
 from fastapi import APIRouter, HTTPException, Depends, Form
 from pydantic import BaseModel
-from typing import List, Dict, Any
-from models.job import Job
-from models.application import Application
-from helpers.get_current_user import CurrentUser
-from models.user import User
 from models.document import Document
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from langchain_community.document_loaders import PyPDFLoader
-from PIL import Image
 # import boto3
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException
-from tempfile import NamedTemporaryFile
 import shutil
-from PIL import Image
 import uuid
 # import pytesseract
 # pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-from helpers.getText import get_text
-import tempfile
 import os
-from helpers.files import upload_file, delete_file
 
 router = APIRouter(prefix="/api/document")
-
 
 class CreateAndUpdateDocumentPayload(BaseModel):
     name: str

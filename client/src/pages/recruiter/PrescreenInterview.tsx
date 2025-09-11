@@ -37,14 +37,14 @@ const PrescreenInterview = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log({ question, expectedOutput, editingId });
-        await post.callApi(
+        const respnse = await post.callApi(
             "interview/create",
             { question: question, expectedAnswer: expectedOutput, id: editingId },
             false,
             false,
             false,
         );
+        console.log(respnse)
         getQuestions();
         setQuestion("");
         setExpectedOutput("");

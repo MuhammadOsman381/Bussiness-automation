@@ -37,102 +37,87 @@ class CheckDocumentsPayload(BaseModel):
     documents: List[CheckDocument]
 
 
-# @router.post("/check-documents")
-# async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
-#     for doc in data.documents:
-#         file_path = doc.file_path.replace("\\", "/")
-#         uploads_marker = "uploads/"
-#         relative_path = (
-#             file_path.split(uploads_marker, 1)[1]
-#             if uploads_marker in file_path
-#             else file_path
-#         )
-#         url = f"http://localhost:8000/files/{relative_path}"
-
-#         existing = await CheckList.get_or_none(user=user, document_id=doc.id)
-#         if existing and existing.status == "available":
-#             print(f"Skipping {doc.name}, already available.")
-#             delete_file(relative_path)
-#             continue
-#         is_valid = "not_available"
-#         if doc.get == "object":
-#             try:
-#                 result = await image_checker(doc.purpose, url)
-#                 print("image_analyzer_repsonse", result)
-#                 if result.strip().upper() == "TRUE":
-#                     is_valid = "available"
-#             except Exception as e:
-#                 print(f"Failed to check image {doc.file_path}: {e}")
-#                 is_valid = "not_available"
-#         else:
-#             result = await ai_document_checker(doc.purpose, doc.text or "")
-#             print("doc_reader_repsonse", result)
-#             if result.strip().lower() == "true":
-#                 is_valid = "available"
-#             else:
-#                 delete_file(relative_path)
-#         if existing:
-#             existing.status = is_valid
-#             if is_valid == "available":
-#                 existing.file_path = relative_path
-#             await existing.save()
-#         else:
-#             create_data = {
-#                 "status": is_valid,
-#                 "user": user,
-#                 "document_id": doc.id,
-#             }
-#             if is_valid == "available":
-#                 create_data["file_path"] = relative_path
-#             else:
-#                 delete_file(relative_path)
-#             await CheckList.create(**create_data)
-
-#     return {"message": "Documents submitted successfully"}
+SERVER_URL = "https://849167fb1932.ngrok-free.app/files" 
 
 
 @router.post("/check-documents")
 async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
     for doc in data.documents:
+        is_checklist_exists = await CheckList.get_or_none(document_id=doc.id)
+        if is_checklist_exists and is_checklist_exists.status == "available":
+            print(f"Skipping document {doc.name}")
+            delete_file(doc.file_path)
+            continue
+        public_path = None
         if doc.file_path:
             public_path = "/" + doc.file_path.replace("\\", "/").split("uploads/", 1)[1]
-        if doc.get == "text":
-            text = await get_text(doc.file_path)
-            response = ai_document_checker(doc.purpose, text)
-            if response == "true":
-                await CheckList(status="available", file_path=doc.file_path)
+        if is_checklist_exists and is_checklist_exists.status == "not_available":
+            if doc.get == "text":
+                text_content = await get_text(doc.file_path) if doc.file_path else ""
+                response = await ai_document_checker(doc.purpose, text_content)
+                print(f"AI doc response: {response}")
+                if response == "true":
+                    await CheckList.filter(document_id=doc.id, user=user).update(
+                        status="available", file_path=public_path
+                    )
+                else:
+                    delete_file(doc.file_path)
             else:
-                await CheckList(status="not_available", file_path="")
+                if public_path:
+                    image_url = (
+                        f"{SERVER_URL}{public_path}"
+                    )
+                    response = await image_checker(doc.purpose, image_url)
+                    print(f"AI image response: {response}")
+                    if response == "true":
+                        await CheckList.filter(document_id=doc.id, user=user).update(
+                            status="available", file_path=public_path
+                        )
+                    else:
+                        delete_file(doc.file_path)
+
         else:
-            response = await image_checker(doc.purpose, public_path)
-            if response == "true":
-                await CheckList(status="available", file_path=doc.file_path)
+            if doc.get == "text":
+                text_content = await get_text(doc.file_path) if doc.file_path else ""
+                print("doc purpose", doc.purpose)
+                response = await ai_document_checker(doc.purpose, text_content)
+
+                print(f"AI doc response: {response}")
+                if response == "true":
+                    await CheckList.create(
+                        document_id=doc.id,
+                        user=user,
+                        status="available",
+                        file_path=public_path,
+                    )
+                else:
+                    await CheckList.create(
+                        document_id=doc.id,
+                        user=user,
+                        status="not_available",
+                        file_path="",
+                    )
+                    delete_file(doc.file_path)
+            else:
+                if public_path:
+                    image_url = (
+                        f"{SERVER_URL}{public_path}"
+                    )
+                    response = await image_checker(doc.purpose, image_url)
+                    print(f"AI image response: {response}")
+                    if response == "true":
+                        await CheckList.create(
+                            document_id=doc.id,
+                            user=user,
+                            status="available",
+                            file_path=public_path,
+                        )
+                    else:
+                        await CheckList.create(
+                            document_id=doc.id,
+                            user=user,
+                            status="not_available",
+                            file_path="",
+                        )
+                        delete_file(doc.file_path)
     return {"message": "Documents submitted successfully"}
-
-
-@router.post("/generate-list/{job_id}")
-async def generate_list(job_id: str):
-    job = await Job.get_or_none(id=job_id)
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
-    existing = await CheckList.filter(job_id=job.id).first()
-    if existing:
-        return {"list": existing.check_list}
-    generated_items = await generate_check_list(job.title, job.description)
-    temp_array = [{"list": item.list, "isChecked": False} for item in generated_items]
-    check_list = await CheckList.create(check_list=temp_array, job=job)
-    return {"list": check_list.check_list}
-
-
-@router.put("/save/{job_id}")
-async def save_list(data: SaveListPayload, job_id: str):
-    job = await Job.get_or_none(id=job_id)
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
-
-    check_list = await CheckList.get_or_none(job_id=job.id)
-    if not check_list:
-        raise HTTPException(status_code=404, detail="Checklist not found")
-    check_list.check_list = data.checkList
-    await check_list.save()
-    return {"message": "CheckList saved succesfully", "list": check_list.check_list}

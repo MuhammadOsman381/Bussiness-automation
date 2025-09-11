@@ -1,12 +1,16 @@
 import mimetypes
 from PIL import Image
 import pytesseract
+
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 from langchain_community.document_loaders import PyPDFLoader
 from pdf2image import convert_from_path
 import os
 
+
 async def get_text(file_path: str) -> str:
+    if file_path == "" or None:
+        return ""
     try:
         mime_type, _ = mimetypes.guess_type(file_path)
         if mime_type and mime_type.startswith("image/"):

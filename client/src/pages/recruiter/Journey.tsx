@@ -60,7 +60,6 @@ const Journey = () => {
     const [aiPrescreenFilter, setAiPrescreenFilter] = React.useState("Pass")
     const [applicants, setApplicants] = React.useState<Applicant[]>([])
     const [intrviewHandsOffData, setIntrviewHandsOffData] = React.useState<InterviewHandsOff[]>([])
-    // const [jobsData, setJobsData] = React.useState<Job[]>([])
     const [jobId, setJobId] = React.useState('')
     const [checkList, setCheckList] = React.useState<{ list: string, isChecked: boolean }[]>([])
 

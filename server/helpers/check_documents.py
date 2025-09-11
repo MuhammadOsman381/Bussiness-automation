@@ -1,46 +1,51 @@
-from pydantic import BaseModel
-from langchain_openai import ChatOpenAI
 from langchain.prompts import (
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
+    MessagesPlaceholder,
 )
+from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
+from langchain.chains import LLMChain
 import os
 
-
-class Result(BaseModel):
-    result: str
-
-
-text_memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+shared_memory = ConversationBufferMemory(
+    memory_key="chat_history",
+    input_key="text",
+    return_messages=True,
+)
 
 text_llm = ChatOpenAI(
     model="gpt-4.1",
-    temperature=0,
+    temperature=1,
     api_key=os.environ.get("OPENAI_API_KEY"),
-).with_structured_output(Result)
+)
 
-
-async def ai_document_checker(requirements: str, text: str) -> str:
-    if not text or text.strip() == "":
-        return "false"
-
+async def ai_document_checker(requirements: str, text: str) -> bool:
     prompt = ChatPromptTemplate.from_messages(
         [
             SystemMessagePromptTemplate.from_template(
                 "You are an AI document checker. "
-                "Your job is to verify whether a document is valid for the requested requirements."
+                "Compare the requirements against the provided document text. "
+                "If ALL requirements are clearly satisfied, return 'true'. "
+                "If ANY requirement is missing or not satisfied, return 'false'. "
+                "Ignore unrelated details (like dates or formatting) unless explicitly asked. "
+                "Output must be exactly 'true' or 'false', nothing else."
             ),
+            MessagesPlaceholder(variable_name="chat_history"),
             HumanMessagePromptTemplate.from_template(
-                f"Requirements:\n{requirements}\n\n"
-                "Document Text:\n{text}\n\n"
-                "Answer with result=true if the document matches the requirements AND is not expired. "
-                "Otherwise, result=false."
+                "Requirements:\n{requirements}\n\nDocument Text:\n{text}"
             ),
         ]
     )
 
-    chain = prompt | text_llm
-    result: Result = await chain.ainvoke({"text": text}, memory=text_memory)
-    return result.result
+    chain = LLMChain(
+        llm=text_llm,
+        prompt=prompt,
+        memory=shared_memory,
+        verbose=True,
+    )
+
+    result = await chain.ainvoke({"requirements": requirements, "text": text})
+    result_text = str(result["text"]).strip().lower()
+    return result_text
