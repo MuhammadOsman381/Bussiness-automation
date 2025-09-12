@@ -37,15 +37,44 @@ class CheckDocumentsPayload(BaseModel):
     documents: List[CheckDocument]
 
 
-SERVER_URL = "https://849167fb1932.ngrok-free.app/files" 
+SERVER_URL = "https://2f7b9c89b66f.ngrok-free.app/files"
 
 
 @router.post("/check-documents")
 async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
+    available_docs = await CheckList.filter(
+        user=user,
+        status="available",
+    ).all()
+
+    # fine tune model
+    if available_docs:
+        for doc in available_docs:
+            file_path = os.path.join("uploads", doc.file_path.lstrip("/"))
+            actual_document = await Document.get_or_none(id=doc.document_id)
+            if actual_document:
+                if actual_document.get == "text":
+                    text_content = await get_text(file_path) if file_path else ""
+                    await ai_document_checker(actual_document.purpose, text_content)
+                else:
+                    image_url = f"{SERVER_URL}{doc.file_path}"
+                    await image_checker(actual_document.purpose, image_url)
+
+    # rest of logic
     for doc in data.documents:
         is_checklist_exists = await CheckList.get_or_none(document_id=doc.id)
         if is_checklist_exists and is_checklist_exists.status == "available":
-            print(f"Skipping document {doc.name}")
+            # file_path = os.path.join(
+            #     "uploads", is_checklist_exists.file_path.lstrip("/")
+            # )
+            # if doc.get == "text":
+            #     text_content = await get_text(file_path) if file_path else ""
+            #     response = await ai_document_checker(doc.purpose, text_content)
+            #     print(f"available doc response {response}")
+            # else:
+            #     image_url = f"{SERVER_URL}{is_checklist_exists.file_path}"
+            #     response = await image_checker(doc.purpose, image_url)
+            #     print(f"available image response {response}")
             delete_file(doc.file_path)
             continue
         public_path = None
@@ -64,9 +93,7 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
                     delete_file(doc.file_path)
             else:
                 if public_path:
-                    image_url = (
-                        f"{SERVER_URL}{public_path}"
-                    )
+                    image_url = f"{SERVER_URL}{public_path}"
                     response = await image_checker(doc.purpose, image_url)
                     print(f"AI image response: {response}")
                     if response == "true":
@@ -100,9 +127,7 @@ async def check_documents(data: CheckDocumentsPayload, user: CurrentUser):
                     delete_file(doc.file_path)
             else:
                 if public_path:
-                    image_url = (
-                        f"{SERVER_URL}{public_path}"
-                    )
+                    image_url = f"{SERVER_URL}{public_path}"
                     response = await image_checker(doc.purpose, image_url)
                     print(f"AI image response: {response}")
                     if response == "true":

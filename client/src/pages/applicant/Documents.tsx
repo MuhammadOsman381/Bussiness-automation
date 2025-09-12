@@ -79,7 +79,7 @@ const Documents = () => {
                     formData.append("folder_name", doc.title.toLowerCase().replace(/\s+/g, "_"));
                     formData.append("get", doc.get);
                     const res = await postDocument.callApi(
-                        "document/get-text-from-document",
+                        "document/upload-file",
                         formData,
                         false,
                         true,

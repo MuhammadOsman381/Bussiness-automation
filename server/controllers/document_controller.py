@@ -6,8 +6,6 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException
 import shutil
 import uuid
-# import pytesseract
-# pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 import os
 
 router = APIRouter(prefix="/api/document")
@@ -82,12 +80,9 @@ async def upload_file(file: UploadFile = File(...), folder_name: str = Form(...)
     try:
         folder_path = os.path.join(UPLOAD_DIR, folder_name)
         os.makedirs(folder_path, exist_ok=True)
-
         ext = os.path.splitext(file.filename)[1]
         unique_name = f"{uuid.uuid4().hex}{ext}"
-
         file_path = os.path.join(folder_path, unique_name)
-
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         return {
@@ -95,6 +90,5 @@ async def upload_file(file: UploadFile = File(...), folder_name: str = Form(...)
             "message": f"File '{file.filename}' saved successfully as '{unique_name}'.",
             "file_path": file_path,
         }
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

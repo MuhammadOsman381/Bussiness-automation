@@ -11,7 +11,7 @@ import os
 
 shared_memory = ConversationBufferMemory(
     memory_key="chat_history",
-    input_key="text",
+    input_key="content",
     return_messages=True,
 )
 
@@ -33,9 +33,7 @@ async def ai_document_checker(requirements: str, text: str) -> bool:
                 "Output must be exactly 'true' or 'false', nothing else."
             ),
             MessagesPlaceholder(variable_name="chat_history"),
-            HumanMessagePromptTemplate.from_template(
-                "Requirements:\n{requirements}\n\nDocument Text:\n{text}"
-            ),
+            HumanMessagePromptTemplate.from_template("{content}"),
         ]
     )
 
@@ -46,6 +44,6 @@ async def ai_document_checker(requirements: str, text: str) -> bool:
         verbose=True,
     )
 
-    result = await chain.ainvoke({"requirements": requirements, "text": text})
-    result_text = str(result["text"]).strip().lower()
-    return result_text
+    content = f"Requirements:\n{requirements}\n\nDocument Text:\n{text}"
+    result = await chain.ainvoke({"content": content})
+    return result["text"].strip().lower()
